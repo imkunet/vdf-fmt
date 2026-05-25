@@ -25,3 +25,9 @@ vdf-fmt --reflow-comments path/to/file.vdf
 vdf-fmt --bare-literals path/to/file.vdf
 ```
 
+### nix
+
+```sh
+nix run github:imkunet/vdf-fmt -- path/to/file.vdf
+nix shell github:imkunet/vdf-fmt
+```
