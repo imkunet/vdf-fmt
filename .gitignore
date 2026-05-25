@@ -1,0 +1,4 @@
+/target
+.direnv
+*.gi
+/web/pkg

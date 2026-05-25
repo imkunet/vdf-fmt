@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>vdf-fmt</title>
+  <style>
+    html {
+      font-family: monospace;
+    }
+
+    main {
+      display: grid;
+      gap: 1rem;
+    }
+
+    textarea {
+      box-sizing: border-box;
+      min-height: 20rem;
+      padding: 0.5ch;
+      width: 100%;
+    }
+
+    .controls {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+
+    button {
+      padding: 0.5rem 1rem;
+    }
+
+    label {
+      align-items: center;
+      display: inline-flex;
+      gap: 0.5ch;
+    }
+
+    #status {
+      color: #666;
+    }
+  </style>
+  <main>
+    <textarea id="input" spellcheck="false">
+"Root" { key 1 // tail
+//disabled_key "2"
+}</textarea
+    >
+    <div class="controls">
+      <button id="format" disabled>Format</button>
+      <label
+        ><input id="reflow-comments" type="checkbox" /> Reflow comments</label
+      >
+      <label><input id="bare-literals" type="checkbox" /> Bare literals</label>
+      <span id="status">loading wasm...</span>
+    </div>
+    <textarea id="output" spellcheck="false" readonly></textarea>
+  </main>
+  <script type="module">
+    const input = document.querySelector("#input");
+    const output = document.querySelector("#output");
+    const formatButton = document.querySelector("#format");
+    const reflowComments = document.querySelector("#reflow-comments");
+    const bareLiterals = document.querySelector("#bare-literals");
+    const status = document.querySelector("#status");
+
+    import init, { format_vdf } from "./pkg/vdf_fmt.js";
+
+    try {
+      await init();
+    } catch (err) {
+      status.textContent = `wasm load failed: ${err.message ?? err}`;
+      throw err;
+    }
+
+    formatButton.disabled = false;
+    status.textContent = "ready";
+
+    formatButton.addEventListener("click", () => {
+      try {
+        output.value = format_vdf(
+          input.value,
+          reflowComments.checked,
+          bareLiterals.checked,
+        );
+        status.textContent = "formatted";
+      } catch (err) {
+        output.value = String(err);
+        status.textContent = "error";
+      }
+    });
+  </script>
+</html>

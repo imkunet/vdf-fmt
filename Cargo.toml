@@ -1,0 +1,35 @@
+[package]
+name = "vdf-fmt"
+version = "0.1.0"
+edition = "2024"
+
+[features]
+default = ["cli"]
+cli = [
+    "dep:clap",
+    "dep:humantime",
+    "dep:time",
+    "dep:tokio",
+    "dep:tracing",
+    "dep:tracing-subscriber",
+]
+
+[lib]
+crate-type = ["rlib", "cdylib"]
+
+[[bin]]
+name = "vdf-fmt"
+path = "src/main.rs"
+required-features = ["cli"]
+
+[dependencies]
+anyhow = { version = "1.0.102", features = ["backtrace"] }
+clap = { version = "4.6.1", features = ["derive", "env"], optional = true }
+humantime = { version = "2.3.0", features = ["mu"], optional = true }
+time = { version = "0.3.47", features = ["formatting"], optional = true }
+tokio = { version = "1.52.3", features = ["full", "tracing"], optional = true }
+tracing = { version = "0.1.44", features = ["log"], optional = true }
+tracing-subscriber = { version = "0.3.23", features = ["env-filter"], optional = true }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = "=0.2.122"
